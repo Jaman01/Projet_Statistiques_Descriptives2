@@ -1,5 +1,5 @@
-# Projet_Statistiques_Descriptives2
-Projet de statistiques descriptves 2 / Opérations bancaires frauduleuses
+# Projet_Stats_Desc2
+Projet de stats descriptves 2 / Opérations bancaires frauduleuses
 
 
 
