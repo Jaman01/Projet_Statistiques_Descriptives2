@@ -1,14 +1,13 @@
 # Projet_Stats_Desc2
-Projet de stats descriptves 2 / Opérations bancaires frauduleuses
-
+Projet stats descript 2 / Détection d'opérations financières frauduleuses
 
 
 Ce projet a été effectué dans le cadre du deuxième semestre de la L2 MIASHS.
-Le sujet a été soumis à l'issue des cours de statistiques descriptives2.
-Après avoir téléchargé un jeu de données comportant des informations sur des opérations financières (frauduleuses ou non), il a été demandé d'analyser les données, de créer des modèles d'apprentissage.
+Le sujet a été soumis à l'issue des cours de statistiques descriptives 2.
+
+Après avoir téléchargé le jeu de données du Projet_Stats_Desc2, nous cherchons à l'analyser et à créer des classifieurs ayant la meilleure performance possible dans le cadre de la détection d'opérations financières frauduleuses.
 
 Les modèles choisis dans le cadre de ce sujet sont :
-
 - arbre de décision
 - régression logistique
 - naive bayes
