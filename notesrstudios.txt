@@ -1,0 +1,308 @@
+df_projetstats <- read.csv("data/train.csv")
+df_projetstats
+ 
+
+#installation des différents packages nécessaires au projet
+
+#install.packages("disk.frame")
+library(disk.frame)
+
+#install.packages("parallel")
+library(parallel)
+
+#install.packages("amelia")
+
+#install.packages("tidyverse")
+#library("tidyverse")
+
+
+#configuration de la machine (Dépend de la machine)
+nCores <- detectCores()
+setup_disk.frame(workers = nCores)
+options(future.globals.maxSize = Inf)
+
+
+#morcellement du package en lots (chunks)
+df <- csv_to_disk.frame(
+  file.path("data", "train.csv"), 
+  outdir = file.path("data", "train.df"),
+  inmapfn = base::I,
+  recommend_nchunks(sum(file.size(file.path("data", "train.csv")))),
+  backend = "data.table")
+
+
+#affichage du premier chunk
+df[1,]
+
+
+#library(Amelia)
+#missmap(train, col = c("black", "grey"))
+
+
+#train_set en échantillon aléatoire (60%)
+df_train <- collect(sample_frac(df, 0.6), replace = FALSE)
+df_train
+
+df_validation <- collect(sample_frac(df, 0.2), replace = FALSE)
+df_validation
+
+df_test <- collect(sample_frac(df, 0.2), replace = FALSE)
+df_test
+
+
+
+
+library(dplyr)
+
+#on enlève la colonne ID
+df_train <- select(df_train, step, type, amount,oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest,isFraud,isFlaggedFraud)
+df_train
+
+df_validation <- select(df_validation,step, type, amount,oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest,isFraud,isFlaggedFraud)
+df_validation
+
+df_test <- select(df_test, step, type, amount,oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest,isFraud,isFlaggedFraud)
+df_test
+
+
+str(df_train)
+
+#les valeurs de 'isFraud' et 'isFlaggedFraud' ne sont pas des integer mais des variables qualitatif ordinale
+
+df_train$isFraud <- factor(df_train$isFraud)
+df_train$isFlaggedFraud <- factor(df_train$isFlaggedFraud)
+
+df_validation$isFraud <- factor(df_validation$isFraud)
+df_validation$isFlaggedFraud <- factor(df_validation$isFlaggedFraud)
+
+df_test$isFraud <- factor(df_test$isFraud)
+df_test$isFlaggedFraud <- factor(df_test$isFlaggedFraud)
+
+
+#analyse des donées train
+library(GGally)
+
+
+#correlation entre les classes
+ggcorr(df_train,
+       nbreaks = 5,
+       label = TRUE,
+       label_size = 3,
+       color = "grey50")
+
+ggcorr(df_validation,
+       nbreaks = 5,
+       label = TRUE,
+       label_size = 3,
+       color = "grey50")
+
+
+ggcorr(df_test,
+       nbreaks = 5,
+       label = TRUE,
+       label_size = 3,
+       color = "grey50")
+
+#comptage du nombre de fraudes
+library(ggplot2)
+
+ggplot(df_train, aes(x = isFraud)) +
+  geom_bar(width=0.5, fill = "coral") +
+  geom_text(stat='count', aes(label=stat(count)), vjust=-0.5) +
+  theme_classic()
+library(ggplot2)
+
+ggplot(df_validation, aes(x = isFraud)) +
+  geom_bar(width=0.5, fill = "coral") +
+  geom_text(stat='count', aes(label=stat(count)), vjust=-0.5) +
+  theme_classic()
+
+ggplot(df_test, aes(x = isFraud)) +
+  geom_bar(width=0.5, fill = "coral") +
+  geom_text(stat='count', aes(label=stat(count)), vjust=-0.5) +
+  theme_classic()
+
+#comptage du nombre de fraudes en fonction du nombre de fraudes signalées
+ggplot(df_train, aes(x = isFraud, fill = isFlaggedFraud)) +
+  geom_bar(position = position_dodge()) +
+  geom_text(stat='count', 
+            aes(label=stat(count)), 
+            position = position_dodge(width=1), vjust=-0.5)+
+  theme_classic()
+
+
+ggplot(df_validation, aes(x = isFraud, fill = isFlaggedFraud)) +
+  geom_bar(position = position_dodge()) +
+  geom_text(stat='count', 
+            aes(label=stat(count)), 
+            position = position_dodge(width=1), vjust=-0.5)+
+  theme_classic()
+
+ggplot(df_test, aes(x = isFraud, fill = isFlaggedFraud)) +
+  geom_bar(position = position_dodge()) +
+  geom_text(stat='count', 
+            aes(label=stat(count)), 
+            position = position_dodge(width=1), vjust=-0.5)+
+  theme_classic()
+
+
+
+#comptage du nombre de fraudes en fonction du nombre de fraudes signalées
+ggplot(df_train, aes(x = oldbalanceDest, fill = newbalanceDest)) +
+  geom_bar(position = position_dodge()) +
+  geom_text(stat='count', 
+            aes(label=stat(count)), 
+            position = position_dodge(width=1), vjust=-0.5)+
+  theme_classic()
+
+
+ggplot(df_validation, aes(x = isFraud, fill = isFlaggedFraud)) +
+  geom_bar(position = position_dodge()) +
+  geom_text(stat='count', 
+            aes(label=stat(count)), 
+            position = position_dodge(width=1), vjust=-0.5)+
+  theme_classic()
+
+ggplot(df_test, aes(x = isFraud, fill = isFlaggedFraud)) +
+  geom_bar(position = position_dodge()) +
+  geom_text(stat='count', 
+            aes(label=stat(count)), 
+            position = position_dodge(width=1), vjust=-0.5)+
+  theme_classic()
+
+
+
+
+
+
+
+
+
+
+
+
+
+_________________________________________________________________________________________
+
+#installation des différents packages nécessaires au projet
+
+#install.packages("disk.frame")
+library(disk.frame)
+
+#install.packages("parallel")
+library(parallel)
+
+#install.packages("amelia")
+library(Amelia)
+
+#install.packages("tidyverse")
+library("tidyverse")
+
+
+#configuration de la machine (Dépend de la machine)
+nCores <- detectCores()
+setup_disk.frame(workers = nCores)
+options(future.globals.maxSize = Inf)
+
+
+#morcellement du package en lots (chunks)
+df <- csv_to_disk.frame(
+  file.path("data", "train.csv"), 
+  outdir = file.path("data", "train.df"),
+  inmapfn = base::I,
+  recommend_nchunks(sum(file.size(file.path("data", "train.csv")))),
+  backend = "data.table")
+
+
+#affichage du premier chunk
+df[1,]
+#df[1,1]
+
+#Mise dans l'ordre de l'ensemble des données
+id_order <- order("data", "train.csv")
+
+df[id_order,]
+
+
+df[1,]
+
+
+#train_set en échantillon aléatoire (60%)
+#exemple : train <- collect(sample_frac(df, 0.60))
+df_train <- collect(sample_frac(train, 0.000001),)
+
+
+
+#missmap(train, col = c("black", "grey"))
+
+
+
+
+
+
+
+
+
+
+
+porquoi reduire et centrer les variables ?
+réduire les coûts de calcul et de stockage des informations. En réduisant le poids des données, on économise l'espace mémoire.
+
+
+
+
+
+
+
+
+
+
+PCA (Principal Component Analysis) : identification des principales directions avec des variantes importantes ;
+LDA (Linear Discriminant Analysis) : identification de directions indépendantes les unes des autres ;
+SVD (Singular Value Decomposition) ;
+Scikit-Learn Library Installation ;
+Classification Dataset ;
+Isomap Embedding ;
+Autoencoder ;
+t-SNE (t-distributed Stochastic Neighbor Embedding).
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=0Jp4gsfOLMs&list=PLblh5JKOoLUJJpBNfk8_YadPwDTO2SCbx
+https://datascientest.com/acp
+http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/73-acp-analyse-en-composantes-principales-avec-r-l-essentiel/#:~:text=L'analyse%20en%20composantes%20principales%20est%20utilis%C3%A9e%20pour%20extraire%20et,nouvelles%20variables%20appel%C3%A9es%20composantes%20principales.
+https://eric.univ-lyon2.fr/~ricco/cours/slides/classif_centres_mobiles.pdf
+http://wikistat.fr/pdf/st-l-des-bi
+https://openclassrooms.com/fr/courses/4379436-explorez-vos-donnees-avec-des-algorithmes-non-supervises/4379506-tp-acp-d-un-jeu-de-donnees-sur-les-performances-d-athletes-olympiques
+http://eric.univ-lyon2.fr/~ricco/cours/slides/logistic_regression_ml.pdf
+http://eric.univ-lyon2.fr/~ricco/cours/slides/naive_bayes_classifier.pdf
+https://eric.univ-lyon2.fr/~ricco/cours/slides/intro_ds_from_dm_to_bd.pdf
+https://eric.univ-lyon2.fr/~ricco/cours/slides/Apprentissage_Supervise.pdf
+https://www.youtube.com/watch?v=Ssen9A9weko
+https://openclassrooms.com/fr/courses/5919236-decouvrez-la-science-des-donnees-pour-les-objets-connectes/6068921-comprenez-lanalyse-en-composantes-principales#:~:text=L'objectif%20de%20l'analyse,plus%20pertinent%20des%20donn%C3%A9es%20initiales.
+https://r-graph-gallery.com/199-correlation-matrix-with-ggally.html
+
+
+http://wikistat.fr/pdf/st-l-des-bi
+https://eric.univ-lyon2.fr/~ricco/cours/slides/classif_centres_mobiles.pdf
+http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/73-acp-analyse-en-composantes-principales-avec-r-l-essentiel/#:~:text=L'analyse%20en%20composantes%20principales%20est%20utilis%C3%A9e%20pour%20extraire%20et,nouvelles%20variables%20appel%C3%A9es%20composantes%20principales.
+https://openclassrooms.com/fr/courses/5919236-decouvrez-la-science-des-donnees-pour-les-objets-connectes/6068921-comprenez-lanalyse-en-composantes-principales#:~:text=L'objectif%20de%20l'analyse,plus%20pertinent%20des%20donn%C3%A9es%20initiales.
+https://www.journaldunet.fr/web-tech/guide-de-l-intelligence-artificielle/1501907-reduction-de-dimensionnalite-en-machine-learning-definition/#:~:text=La%20r%C3%A9duction%20de%20dimensionnalit%C3%A9%20en,et%20de%20temps%20d'analyse.
+
+
+
+
+
+
+
+
