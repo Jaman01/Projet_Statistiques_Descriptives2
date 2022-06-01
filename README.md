@@ -1,4 +1,3 @@
-![Scores_Modeles](https://user-images.githubusercontent.com/79601509/171345798-135f7fb7-b769-45f3-afe8-397d35a51fc1.PNG)
 # Projet_Stats_Desc2
 En : Detection of fraudulent financial transactions
 
@@ -53,3 +52,9 @@ Cn : 该主题是在描述统计 2 课程结束时提交的。
 该项目完全使用 R 软件进行。
 
 Yufei Li 和 Jean-Jacques Aman 的项目
+
+
+
+
+
+![Scores_Modeles](https://user-images.githubusercontent.com/79601509/171345798-135f7fb7-b769-45f3-afe8-397d35a51fc1.PNG)
