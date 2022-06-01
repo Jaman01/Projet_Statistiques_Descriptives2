@@ -1,4 +1,3 @@
-![Prediction_Random_Forest_test](https://user-images.githubusercontent.com/79601509/171346229-c17062d2-28fc-4fb6-b6cb-2a182a0ee5c1.PNG)
 # Projet_Stats_Desc2
 En : Detection of fraudulent financial transactions
 
@@ -56,6 +55,12 @@ Yufei Li 和 Jean-Jacques Aman 的项目
 
 
 
-
+Score de comparaison des modeles
 
 ![Scores_Modeles](https://user-images.githubusercontent.com/79601509/171345798-135f7fb7-b769-45f3-afe8-397d35a51fc1.PNG)
+
+
+
+Prediction test
+
+![Prediction_Random_Forest_test](https://user-images.githubusercontent.com/79601509/171346229-c17062d2-28fc-4fb6-b6cb-2a182a0ee5c1.PNG)
